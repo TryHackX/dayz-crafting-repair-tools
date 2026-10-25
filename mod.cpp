@@ -1,0 +1,11 @@
+name = "Crafting Repair Tools";
+picture = "CraftingRepairTools/gui/logo/crt_logo.paa";
+logo = "CraftingRepairTools/gui/logo/crt_logo.paa";
+logoSmall = "CraftingRepairTools/gui/logo/crt_logo.paa";
+logoOver = "CraftingRepairTools/gui/logo/crt_logo_over.paa";
+tooltip = "Crafting Repair Tools";
+overview = "Craft every vanilla repair kit from basic items. Every recipe can be switched on or off in the server config.";
+action = "https://github.com/TryHackX/dayz-crafting-repair-tools";
+author = "TryHackX";
+authorID = "76561199846115789";
+version = "1.1";
