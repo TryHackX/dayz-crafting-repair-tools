@@ -4,3 +4,8 @@
 *.bak
 Thumbs.db
 desktop.ini
+
+# old preview images - kept on disk, not in the repository
+soucre/Thumbnails/new.png
+soucre/Thumbnails/old.jpg
+soucre/Thumbnails/text.png
