@@ -2,7 +2,7 @@
 
 Craft every vanilla repair kit from basic items - every recipe is defined in the server config. For DayZ 1.30 (Badlands).
 
-[Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3176951485) · DayZ 1.30 (Badlands) · author: TryHackX
+[Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3827409624) · DayZ 1.30 (Badlands) · author: TryHackX
 
 ## Support
 
