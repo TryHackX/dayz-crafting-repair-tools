@@ -54,12 +54,17 @@ class CRT_Settings
 class CRT_Config
 {
     static const int MAX_RECIPES = 40;
-    static const int RPC_SYNC_CONFIG = 1129469233;
+    static const int RPC_SYNC_CONFIG = 1129469234;  // 1.2+: config in parts (1.1 sent one string with 1129469233)
+    static const int SYNC_PART_SIZE = 800;          // bytes per RPC - the engine cannot read back strings of about 1 KB and more
     static const string CONFIG_FOLDER = "$profile:CraftingRepairTools";
     static const string CONFIG_FILE = "$profile:CraftingRepairTools/config.json";
 
     protected static ref CRT_Settings m_Settings;
     protected static int m_ApplyRetries;
+    protected static int m_SyncId;                      // server: number of the last sent config
+    protected static int m_ReceiveId;                   // client: config being received
+    protected static int m_ReceivedParts;
+    protected static ref array<string> m_ReceiveParts;
 
     static CRT_Settings GetSettings()
     {
@@ -92,7 +97,7 @@ class CRT_Config
         Apply();
     }
 
-    //! Server: the config goes to the player as JSON text
+    //! Server: the config goes to the player as JSON text, split in parts of SYNC_PART_SIZE (one RPC each)
     static void SendTo(PlayerBase player)
     {
         if (!player || !player.GetIdentity())
@@ -102,23 +107,66 @@ class CRT_Config
         JsonSerializer js = new JsonSerializer();
         js.WriteToString(GetSettings(), false, json);
 
-        ScriptRPC rpc = new ScriptRPC();
-        rpc.Write(json);
-        rpc.Send(player, RPC_SYNC_CONFIG, true, player.GetIdentity());
+        m_SyncId++;
+        int length = json.Length();
+        int count = (length + SYNC_PART_SIZE - 1) / SYNC_PART_SIZE;
+        if (count < 1)
+            count = 1;
+
+        for (int i = 0; i < count; i++)
+        {
+            int start = i * SYNC_PART_SIZE;
+            int size = length - start;
+            if (size > SYNC_PART_SIZE)
+                size = SYNC_PART_SIZE;
+
+            ScriptRPC rpc = new ScriptRPC();
+            rpc.Write(m_SyncId);
+            rpc.Write(i);
+            rpc.Write(count);
+            rpc.Write(json.Substring(start, size));
+            rpc.Send(player, RPC_SYNC_CONFIG, true, player.GetIdentity());
+        }
     }
 
-    //! Client: config received from the server
+    //! Client: one part of the config from the server, the last missing part completes it
     static void OnReceive(ParamsReadContext ctx)
     {
-        string json;
-        if (!ctx.Read(json))
+        int syncId;
+        int index;
+        int count;
+        string part;
+        if (!ctx.Read(syncId) || !ctx.Read(index) || !ctx.Read(count) || !ctx.Read(part))
             return;
+
+        if (count < 1 || index < 0 || index >= count)
+            return;
+
+        if (!m_ReceiveParts || syncId != m_ReceiveId || count != m_ReceiveParts.Count())
+        {
+            m_ReceiveId = syncId;
+            m_ReceivedParts = 0;
+            m_ReceiveParts = new array<string>;
+            m_ReceiveParts.Resize(count);
+        }
+
+        if (m_ReceiveParts[index] == "")
+            m_ReceivedParts++;
+        m_ReceiveParts[index] = part;
+        if (m_ReceivedParts < count)
+            return;
+
+        string json = "";
+        foreach (string p : m_ReceiveParts)
+            json += p;
+        m_ReceiveParts = null;
 
         CRT_Settings received = ParseJson(json);
         if (!received)
             return;
 
         m_Settings = received;
+        Print("[CraftingRepairTools] Config received from the server: " + received.Recipes.Count().ToString() + " recipes, " + json.Length().ToString() + " bytes in " + count.ToString() + " parts");
         Apply();
     }
 

@@ -16,7 +16,7 @@ class CfgMods {
 		credits = "TryHackX, Kooftt";
 		author = "TryHackX";
 		authorID = "76561199846115789";
-		version = "1.1";
+		version = "1.2";
 		extra = 0;
 		type = "mod";
 		dependencies[]=

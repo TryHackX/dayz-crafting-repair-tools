@@ -69,6 +69,14 @@ and edited, and you can add your own (up to 40 enabled):
 
 Credits: TryHackX, Kooftt (help with scripts).
 
+## Changelog
+
+- **1.2** - Fixed the config sync: on dedicated servers players never received the server config (DayZ cannot read back
+  a text of about 1 KB or more from one RPC, the config has about 5 KB), so no recipe of the mod showed up in their
+  crafting menu. The config is now sent in parts of 800 bytes and joined on the client. The config file is unchanged.
+- **1.1** - DayZ 1.30 (Badlands) update: recipes defined in the server config, 6 extra recipes (off by default),
+  rag stack fix, logo in the mods menu.
+
 ## License
 
 © TryHackX. You are free to use this mod on your server. Please do not repack or reupload it without permission.

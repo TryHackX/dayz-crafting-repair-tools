@@ -1,4 +1,4 @@
-Crafting Repair Tools 1.1 - server setup (DayZ 1.30 Badlands)
+Crafting Repair Tools 1.2 - server setup (DayZ 1.30 Badlands)
 
 1. Copy keys\TryHackX_New.bikey to your server's "keys" folder.
    (Older versions were signed with TryHackX.bikey - that key is no longer used.)
@@ -39,3 +39,8 @@ Recipe settings (config.json, "Recipes" list - you can edit, add or remove recip
       "QualityFactor"  1 = condition of this ingredient affects the crafted quantity
       "QuantityFactor" 1 = remaining quantity of this ingredient affects the crafted quantity
 Broken entries (unknown result, no ingredient types) are switched off with a line in the server script log.
+
+Changes in 1.2:
+   Fixed: on dedicated servers players did not receive the server config, so the recipes of the mod
+   did not show up in their crafting menu. The config is now sent in small parts.
+   Server and players must both run 1.2 - config.json stays the same, nothing to change.

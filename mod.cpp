@@ -8,4 +8,4 @@ overview = "Craft every vanilla repair kit from basic items. Every recipe can be
 action = "https://github.com/TryHackX/dayz-crafting-repair-tools";
 author = "TryHackX";
 authorID = "76561199846115789";
-version = "1.1";
+version = "1.2";
